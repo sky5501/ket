@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trạm Cuối 20/11 - Dành Tặng Cô Giáo Chủ Nhiệm Gen Z</title>
+  
+  <!-- Thư viện Pháo hoa (Canvas Confetti JS) -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    body {
+      background-color: #0f172a;
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    #bgCanvas {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: 1; pointer-events: none;
+    }
+
+    .main-wrapper {
+      position: relative;
+      z-index: 10;
+      max-width: 850px;
+      width: 100%;
+      background: rgba(30, 41, 59, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.125);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      margin-top: 20px;
+      margin-bottom: 40px;
+    }
+
+    /* Modal Popup Chào mừng & Thông báo lỗi nút */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.4s ease;
+    }
+    .modal-card {
+      background: #1e293b;
+      border: 2px solid #ec4899;
+      padding: 30px 20px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 90%;
+      width: 380px;
+      box-shadow: 0 0 30px rgba(236, 72, 153, 0.4);
+      animation: popupBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popupBounce {
+      0% { transform: scale(0.3); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .modal-card h2 {
+      color: #f43f5e;
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+    .btn-modal {
+      margin-top: 18px;
+      padding: 10px 24px;
+      background: linear-gradient(135deg, #f43f5e, #ec4899);
+      color: #fff;
+      border: none;
+      border-radius: 25px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* Header */
+    .header-zone {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .heart-svg {
+      width: 55px; height: 55px;
+      fill: #f43f5e;
+      animation: heartbeat 1.2s infinite;
+      margin-bottom: 10px;
+    }
+    @keyframes heartbeat {
+      0% { transform: scale(1); }
+      14% { transform: scale(1.3); }
+      28% { transform: scale(1); }
+      42% { transform: scale(1.3); }
+      70% { transform: scale(1); }
+    }
+    .title-main {
+      font-size: 28px;
+      background: linear-gradient(to right, #f43f5e, #a855f7, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Game Section */
+    .game-box {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+    .input-field {
+      padding: 12px;
+      width: 80%; max-width: 300px;
+      background: #0f172a;
+      border: 2px solid #38bdf8;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 16px;
+      text-align: center;
+      outline: none;
+      margin-bottom: 12px;
+    }
+    .btn-action {
+      padding: 12px 28px;
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      color: #fff;
+      font-size: 15px;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+    .result-box {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #4ade80;
+      display: none;
+      animation: fadeIn 0.8s ease;
+    }
+
+    /* Gallery */
+    .gallery-head {
+      font-size: 19px; color: #38bdf8;
+      margin-bottom: 15px; text-align: center;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px; margin-bottom: 30px;
+    }
+    .photo-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px; overflow: hidden;
+    }
+    .photo-card img {
+      width: 100%; height: 180px; object-fit: cover; display: block;
+    }
+
+    /* BẢNG ĐÁNH GIÁ TRẢI NGHIỆM */
+    .feedback-box {
+      display: none;
+      background: rgba(244, 63, 94, 0.1);
+      border: 2px dashed #f43f5e;
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 25px;
+      animation: fadeIn 0.8s ease;
+    }
+    .feedback-title {
+      font-size: 18px;
+      color: #fbbf24;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .btn-fb {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .btn-fb:hover { transform: scale(1.05); }
+    .btn-bad { background: #64748b; color: #fff; }
+    .btn-good { background: #22c55e; color: #fff; }
+
+    /* DÒNG CHỮ CẢM XÚC (Thành quả 1 tháng...) */
+    .worth-text {
+      display: none;
+      font-size: 20px;
+      font-weight: bold;
+      color: #fbbf24;
+      text-align: center;
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(251, 191, 36, 0.1);
+      border-radius: 12px;
+      animation: fadeIn 1s ease;
+    }
+
+    /* PHẦN CHỮ ĐỔI MÀU KHỦNG & CHUYỂN LINK */
+    .final-zone {
+      display: none;
+      text-align: center;
+      padding-top: 20px;
+      border-top: 2px dashed rgba(244, 63, 94, 0.4);
+      animation: fadeIn 1s ease;
+    }
+    .rainbow-headline {
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 12px;
+      animation: colorCycle 3s infinite linear;
+    }
+    @keyframes colorCycle {
+      0% { color: #f43f5e; }
+      25% { color: #fbbf24; }
+      50% { color: #34d399; }
+      75% { color: #38bdf8; }
+      100% { color: #f43f5e; }
+    }
+    .typewriter-text {
+      font-size: 15px; color: #cbd5e1;
+      margin-bottom: 18px; min-height: 24px;
+    }
+    .sub-redirect-link {
+      font-size: 14px; color: #f472b6;
+      text-decoration: underline; cursor: pointer;
+      display: inline-block; padding: 8px 16px;
+      border-radius: 8px; background: rgba(244, 114, 182, 0.1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- Popup Chào Mừng Ba Đầu -->
+  <div class="modal-overlay" id="welcomeModal">
+    <div class="modal-card">
+      <h2>🎉 90% rùi cô ơi, cố lên! 🎉</h2>
+      <p style="color: #94a3b8; font-size: 14px;">Chỉ còn một chút nữa là đến trạm bí mật cuối cùng rồi nè!</p>
+      <button class="btn-modal" onclick="closeModal('welcomeModal')">Tiến Vào Trạm Đích 🚀</button>
+    </div>
+  </div>
+
+  <!-- Popup Báo Lỗi Nút "Chán òm" -->
+  <div class="modal-overlay" id="errorModal" style="display: none;">
+    <div class="modal-card" style="border-color: #ef4444;">
+      <h2>⚠️ Hệ Thống Báo Lỗi!</h2>
+      <p style="color: #cbd5e1; font-size: 15px; margin-top: 8px;">
+        Ối! Nút <strong>"Chán òm"</strong> này tạm thời bị lỗi kỹ thuật rồi cô ơi! 😅<br><br>
+        Cô thử bấm nút còn lại xem có bị lỗi không nha! 🙈
+      </p>
+      <button class="btn-modal" style="background: linear-gradient(135deg, #ef4444, #f97316);" onclick="closeModal('errorModal')">Dạ để cô chọn lại 😆</button>
+    </div>
+  </div>
+
+  <!-- Container Chính -->
+  <div class="main-wrapper">
+    
+    <div class="header-zone">
+      <svg class="heart-svg" viewBox="0 0 32 32">
+        <path d="M16 28.72C-16 16 0 2.16 11.2 2.16c4.24 0 7.2 2.72 8.8 5.6 1.6-2.88 4.56-5.6 8.8-5.6C32 2.16 48 16 16 28.72z"/>
+      </svg>
+      <h1 class="title-main">BÍ MẬT TRẠM CUỐI 20/11</h1>
+      <p style="color: #94a3b8; font-size: 14px;">Món quà nhỏ dành riêng cho Cô Giáo Chủ Nhiệm Gen Z ❤️</p>
+    </div>
+
+    <!-- Game Đoán Tiền -->
+    <div class="game-box">
+      <h3>💰 Quẻ Bói Tài Lộc (Cuối 2026 - Đầu 2027)</h3>
+      <p style="margin-bottom: 10px; color: #cbd5e1; font-size: 14px;">Cô hãy nhập một con số may mắn bất kỳ vào bên dưới:</p>
+      <input type="number" id="moneyInput" class="input-field" placeholder="Ví dụ: 100000000" />
+      <br>
+      <button class="btn-action" onclick="playMoneyGame()">Xem Vũ Trụ Dự Báo 🔮</button>
+      
+      <div class="result-box" id="resultText"></div>
+    </div>
+
+    <!-- Album Ảnh -->
+    <div class="gallery-head">📸 Album Kỷ Niệm Của Lớp Chúng Mình</div>
+    <div class="gallery-grid" id="photoGallery"></div>
+
+    <!-- BẢNG ĐÁNH GIÁ TRẢI NGHIỆM -->
+    <div class="feedback-box" id="feedbackBox">
+      <div class="feedback-title">⭐ Cô đánh giá trải nghiệm trạm cuối này thế nào ạ?</div>
+      <div class="btn-group">
+        <button class="btn-fb btn-bad" onclick="clickBadButton()">Chán òm 😒</button>
+        <button class="btn-fb btn-good" onclick="clickGoodButton()">Siêu vui / Tuyệt vời 😍</button>
+      </div>
+    </div>
+
+    <!-- DÒNG CHỮ THÀNH QUẢ 1 THÁNG... -->
+    <div class="worth-text" id="worthText">
+      ✨ "Thành quả 1 tháng bằng 1 buổi 20/11, cũng đáng." ✨
+    </div>
+
+    <!-- PHẦN CHỮ ĐỔI MÀU & LINK CHUYỂN TIẾP -->
+    <div class="final-zone" id="finalZone">
+      <div class="rainbow-headline">CHÚC CÔ 20/11 LUÔN XINH ĐẸP VÀ RẠNG RỠ! ✨</div>
+      <div class="typewriter-text" id="typewriter"></div>
+      <div class="sub-redirect-link" onclick="handleRedirect()">👉 Bấm vào đây để mở phần quà đặc biệt tiếp theo...</div>
+    </div>
+
+  </div>
+
+  <script>
+    // 1. MODAL CONTROL
+    const welcomeModal = document.getElementById('welcomeModal');
+    const autoCloseTimer = setTimeout(() => closeModal('welcomeModal'), 3500);
+
+    function closeModal(modalId) {
+      if (modalId === 'welcomeModal') clearTimeout(autoCloseTimer);
+      const target = document.getElementById(modalId);
+      target.style.opacity = '0';
+      setTimeout(() => { target.style.display = 'none'; }, 400);
+    }
+
+    // 2. DYNAMIC PHOTO GALLERY
+    const imageList = [
+      "https://picsum.photos/400/300?random=10",
+      "https://picsum.photos/400/300?random=20",
+      "https://picsum.photos/400/300?random=30",
+      "https://picsum.photos/400/300?random=40"
+    ];
+
+    const galleryGrid = document.getElementById('photoGallery');
+    imageList.forEach((url, idx) => {
+      const card = document.createElement('div');
+      card.className = 'photo-card';
+      card.innerHTML = `<img src="${url}" alt="Khoảnh khắc ${idx + 1}">`;
+      galleryGrid.appendChild(card);
+    });
+
+    // 3. GAME LOGIC & PHÁO HOA
+    function playMoneyGame() {
+      const val = document.getElementById('moneyInput').value;
+      const res = document.getElementById('resultText');
+      const feedbackB = document.getElementById('feedbackBox');
+
+      if (!val || val <= 0) {
+        alert("Cô ơi nhập con số lớn xíu cho tài lộc dồi dào nè! 😆");
+        return;
+      }
+
+      const moneyFormatted = Number(val).toLocaleString('vi-VN');
+      res.style.display = 'block';
+      res.innerHTML = `✨ Quẻ Bói Dự Báo: Từ cuối năm 2026 đến đầu năm 2027, tài khoản của cô sẽ nổ tưng bừng ít nhất <strong>${moneyFormatted} VNĐ</strong>! 💸🎉`;
+
+      // Bắn pháo hoa rực rỡ
+      triggerConfetti();
+
+      // Hiện Bảng đánh giá trải nghiệm
+      feedbackB.style.display = 'block';
+      feedbackB.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // 4. XỬ LÝ NÚT ĐÁNH GIÁ (TROLL & THÀNH QUẢ)
+    function clickBadButton() {
+      const errModal = document.getElementById('errorModal');
+      errModal.style.display = 'flex';
+      errModal.style.opacity = '1';
+    }
+
+    function clickGoodButton() {
+      document.getElementById('feedbackBox').style.display = 'none';
+      
+      // Hiện dòng chữ cảm xúc
+      const worthT = document.getElementById('worthText');
+      worthT.style.display = 'block';
+
+      // Tiếp tục hiện phần chữ đổi màu & gõ chữ
+      const finalZ = document.getElementById('finalZone');
+      finalZ.style.display = 'block';
+      
+      startTypewriter("Cảm ơn cô vì đã luôn kiên nhẫn, yêu thương và truyền cảm hứng cho tập thể lớp mình!");
+      
+      // Bắn thêm một đợt pháo hoa nữa mừng cô chọn đúng!
+      triggerConfetti();
+    }
+
+    function triggerConfetti() {
+      const duration = 2.5 * 1000;
+      const end = Date.now() + duration;
+      (function frame() {
+        confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 } });
+        confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 } });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      }());
+    }
+
+    // 5. TYPEWRITER EFFECT
+    function startTypewriter(text) {
+      const el = document.getElementById('typewriter');
+      el.innerHTML = "";
+      let i = 0;
+      const timer = setInterval(() => {
+        if (i < text.length) {
+          el.innerHTML += text.charAt(i);
+          i++;
+        } else {
+          clearInterval(timer);
+        }
+      }, 45);
+    }
+
+    // 6. REDIRECT URL (THAY URL CỦA CÔNG VÀO ĐÂY)
+    function handleRedirect() {
+      const targetUrl = "https://www.google.com"; 
+      window.location.href = targetUrl;
+    }
+
+    // 7. CANVAS PARTICLES
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    for (let i = 0; i < 35; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2 + 1,
+        speedY: Math.random() * 0.7 + 0.2,
+        opacity: Math.random() * 0.5 + 0.3
+      });
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.y -= p.speedY;
+        if (p.y < 0) p.y = canvas.height;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(244, 114, 182, ${p.opacity})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+  </script>
+</body>
+</html>
