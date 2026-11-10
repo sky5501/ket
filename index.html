@@ -55,13 +55,14 @@
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.85);
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 9999;
       opacity: 1;
       transition: opacity 0.4s ease;
+      padding: 15px;
     }
     .modal-card {
       background: #1e293b;
@@ -93,6 +94,29 @@
       font-size: 15px;
       font-weight: bold;
       cursor: pointer;
+    }
+
+    /* MODAL POPUP THIỆP ONLINE (MỚI) */
+    .card-modal-box {
+      background: #1e293b;
+      border: 2px solid #38bdf8;
+      padding: 20px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 95%;
+      width: 550px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 0 35px rgba(56, 189, 248, 0.5);
+      animation: popupBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .card-modal-box img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      margin-top: 12px;
+      margin-bottom: 15px;
     }
 
     /* Header */
@@ -191,45 +215,29 @@
       animation: fadeIn 0.8s ease;
     }
     .feedback-title {
-      font-size: 18px;
-      color: #fbbf24;
-      margin-bottom: 15px;
-      font-weight: bold;
+      font-size: 18px; color: #fbbf24;
+      margin-bottom: 15px; font-weight: bold;
     }
     .btn-group {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      flex-wrap: wrap;
+      display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;
     }
     .btn-fb {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.2s;
+      padding: 10px 20px; border: none; border-radius: 20px;
+      font-size: 14px; font-weight: bold; cursor: pointer; transition: transform 0.2s;
     }
     .btn-fb:hover { transform: scale(1.05); }
     .btn-bad { background: #64748b; color: #fff; }
     .btn-good { background: #22c55e; color: #fff; }
 
-    /* DÒNG CHỮ CẢM XÚC (Thành quả 1 tháng...) */
+    /* DÒNG CHỮ CẢM XÚC */
     .worth-text {
-      display: none;
-      font-size: 20px;
-      font-weight: bold;
-      color: #fbbf24;
-      text-align: center;
-      margin: 20px 0;
-      padding: 15px;
-      background: rgba(251, 191, 36, 0.1);
-      border-radius: 12px;
+      display: none; font-size: 20px; font-weight: bold; color: #fbbf24;
+      text-align: center; margin: 20px 0; padding: 15px;
+      background: rgba(251, 191, 36, 0.1); border-radius: 12px;
       animation: fadeIn 1s ease;
     }
 
-    /* PHẦN CHỮ ĐỔI MÀU KHỦNG & CHUYỂN LINK */
+    /* PHẦN CHỮ ĐỔI MÀU & CHUYỂN LINK */
     .final-zone {
       display: none;
       text-align: center;
@@ -238,9 +246,7 @@
       animation: fadeIn 1s ease;
     }
     .rainbow-headline {
-      font-size: 28px;
-      font-weight: 900;
-      margin-bottom: 12px;
+      font-size: 28px; font-weight: 900; margin-bottom: 12px;
       animation: colorCycle 3s infinite linear;
     }
     @keyframes colorCycle {
@@ -251,14 +257,24 @@
       100% { color: #f43f5e; }
     }
     .typewriter-text {
-      font-size: 15px; color: #cbd5e1;
-      margin-bottom: 18px; min-height: 24px;
+      font-size: 15px; color: #cbd5e1; margin-bottom: 18px; min-height: 24px;
     }
     .sub-redirect-link {
-      font-size: 14px; color: #f472b6;
-      text-decoration: underline; cursor: pointer;
-      display: inline-block; padding: 8px 16px;
-      border-radius: 8px; background: rgba(244, 114, 182, 0.1);
+      font-size: 14px; color: #f472b6; text-decoration: underline; cursor: pointer;
+      display: inline-block; padding: 8px 16px; border-radius: 8px;
+      background: rgba(244, 114, 182, 0.1); margin-bottom: 15px;
+    }
+
+    /* ĐÒNG CHỮ THIỆP ONLINE (MỚI) */
+    .online-card-link {
+      font-size: 16px; font-weight: bold; color: #fbbf24;
+      text-decoration: underline; cursor: pointer; display: inline-block;
+      padding: 10px 20px; border-radius: 20px;
+      background: rgba(251, 191, 36, 0.15); border: 1px solid #fbbf24;
+      transition: all 0.3s ease;
+    }
+    .online-card-link:hover {
+      background: rgba(251, 191, 36, 0.3); transform: scale(1.05);
     }
 
     @keyframes fadeIn {
@@ -271,7 +287,7 @@
 
   <canvas id="bgCanvas"></canvas>
 
-  <!-- Popup Chào Mừng Ba Đầu -->
+  <!-- Popup Chào Mừng Ban Đầu -->
   <div class="modal-overlay" id="welcomeModal">
     <div class="modal-card">
       <h2>🎉 90% rùi cô ơi, cố lên! 🎉</h2>
@@ -292,6 +308,16 @@
     </div>
   </div>
 
+  <!-- POPUP HIỂN THỊ THIỆP ONLINE (MỚI) -->
+  <div class="modal-overlay" id="cardModal" style="display: none;">
+    <div class="card-modal-box">
+      <h2 style="color: #38bdf8; font-size: 20px;">💌 THIỆP TRI ÂN 20/11</h2>
+      <!-- ẢNH THIỆP SẼ TỰ LOAD QUA URL TRONG JS -->
+      <img id="onlineCardImg" src="" alt="Thiệp 20/11 Online">
+      <button class="btn-modal" style="background: linear-gradient(135deg, #06b6d4, #3b82f6);" onclick="closeModal('cardModal')">Đóng Thiệp ✨</button>
+    </div>
+  </div>
+
   <!-- Container Chính -->
   <div class="main-wrapper">
     
@@ -307,7 +333,7 @@
     <div class="game-box">
       <h3>💰 Quẻ Bói Tài Lộc (Cuối 2026 - Đầu 2027)</h3>
       <p style="margin-bottom: 10px; color: #cbd5e1; font-size: 14px;">Cô hãy nhập một con số may mắn bất kỳ vào bên dưới:</p>
-      <input type="number" id="moneyInput" class="input-field" placeholder="Ví dụ: 100000000" />
+      <input type="number" id="moneyInput" class="input-field" placeholder="Ví dụ: 9999999" />
       <br>
       <button class="btn-action" onclick="playMoneyGame()">Xem Vũ Trụ Dự Báo 🔮</button>
       
@@ -332,17 +358,31 @@
       ✨ "Thành quả 1 tháng bằng 1 buổi 20/11, cũng đáng." ✨
     </div>
 
-    <!-- PHẦN CHỮ ĐỔI MÀU & LINK CHUYỂN TIẾP -->
+    <!-- PHẦN CHỮ ĐỔI MÀU, LINK CHUYỂN TIẾP & THIỆP ONLINE -->
     <div class="final-zone" id="finalZone">
       <div class="rainbow-headline">CHÚC CÔ 20/11 LUÔN XINH ĐẸP VÀ RẠNG RỠ! ✨</div>
       <div class="typewriter-text" id="typewriter"></div>
+      
+      <!-- Nút chuyển hướng URL cũ -->
       <div class="sub-redirect-link" onclick="handleRedirect()">👉 Bấm vào đây để mở phần quà đặc biệt tiếp theo...</div>
+      <br>
+      
+      <!-- NÚT MỞ THIỆP ONLINE (MỚI THÊM) -->
+      <div class="online-card-link" onclick="openCardModal()">💌 Mở thiệp online của lớp gửi cô</div>
     </div>
 
   </div>
 
   <script>
-    // 1. MODAL CONTROL
+    // ==========================================
+    // 1. CÀI ĐẶT URL THIỆP ONLINE (THAY URL ẢNH THIỆP VÀO ĐÂY)
+    // ==========================================
+    const onlineCardUrl = "https://picsum.photos/600/800?random=99"; 
+    // Ông dán link ảnh thiệp thực tế của ông vào dấu ngoặc kép trên nha!
+
+    // ==========================================
+    // 2. MODAL CONTROL
+    // ==========================================
     const welcomeModal = document.getElementById('welcomeModal');
     const autoCloseTimer = setTimeout(() => closeModal('welcomeModal'), 3500);
 
@@ -353,7 +393,18 @@
       setTimeout(() => { target.style.display = 'none'; }, 400);
     }
 
-    // 2. DYNAMIC PHOTO GALLERY
+    function openCardModal() {
+      const cardM = document.getElementById('cardModal');
+      const cardImg = document.getElementById('onlineCardImg');
+      cardImg.src = onlineCardUrl; // Gán URL ảnh thiệp
+      cardM.style.display = 'flex';
+      cardM.style.opacity = '1';
+      triggerConfetti(); // Bắn thêm pháo hoa khi mở thiệp!
+    }
+
+    // ==========================================
+    // 3. DYNAMIC PHOTO GALLERY
+    // ==========================================
     const imageList = [
       "https://picsum.photos/400/300?random=10",
       "https://picsum.photos/400/300?random=20",
@@ -369,7 +420,9 @@
       galleryGrid.appendChild(card);
     });
 
-    // 3. GAME LOGIC & PHÁO HOA
+    // ==========================================
+    // 4. GAME LOGIC & PHÁO HOA
+    // ==========================================
     function playMoneyGame() {
       const val = document.getElementById('moneyInput').value;
       const res = document.getElementById('resultText');
@@ -384,15 +437,15 @@
       res.style.display = 'block';
       res.innerHTML = `✨ Quẻ Bói Dự Báo: Từ cuối năm 2026 đến đầu năm 2027, tài khoản của cô sẽ nổ tưng bừng ít nhất <strong>${moneyFormatted} VNĐ</strong>! 💸🎉`;
 
-      // Bắn pháo hoa rực rỡ
       triggerConfetti();
 
-      // Hiện Bảng đánh giá trải nghiệm
       feedbackB.style.display = 'block';
       feedbackB.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // 4. XỬ LÝ NÚT ĐÁNH GIÁ (TROLL & THÀNH QUẢ)
+    // ==========================================
+    // 5. XỬ LÝ NÚT ĐÁNH GIÁ
+    // ==========================================
     function clickBadButton() {
       const errModal = document.getElementById('errorModal');
       errModal.style.display = 'flex';
@@ -402,17 +455,13 @@
     function clickGoodButton() {
       document.getElementById('feedbackBox').style.display = 'none';
       
-      // Hiện dòng chữ cảm xúc
       const worthT = document.getElementById('worthText');
       worthT.style.display = 'block';
 
-      // Tiếp tục hiện phần chữ đổi màu & gõ chữ
       const finalZ = document.getElementById('finalZone');
       finalZ.style.display = 'block';
       
       startTypewriter("Cảm ơn cô vì đã luôn kiên nhẫn, yêu thương và truyền cảm hứng cho tập thể lớp mình!");
-      
-      // Bắn thêm một đợt pháo hoa nữa mừng cô chọn đúng!
       triggerConfetti();
     }
 
@@ -426,7 +475,9 @@
       }());
     }
 
-    // 5. TYPEWRITER EFFECT
+    // ==========================================
+    // 6. TYPEWRITER EFFECT
+    // ==========================================
     function startTypewriter(text) {
       const el = document.getElementById('typewriter');
       el.innerHTML = "";
@@ -441,13 +492,17 @@
       }, 45);
     }
 
-    // 6. REDIRECT URL (THAY URL CỦA CÔNG VÀO ĐÂY)
+    // ==========================================
+    // 7. REDIRECT URL
+    // ==========================================
     function handleRedirect() {
       const targetUrl = "https://www.google.com"; 
       window.location.href = targetUrl;
     }
 
-    // 7. CANVAS PARTICLES
+    // ==========================================
+    // 8. CANVAS PARTICLES
+    // ==========================================
     const canvas = document.getElementById('bgCanvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
